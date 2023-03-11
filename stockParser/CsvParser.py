@@ -7,7 +7,7 @@ from datetime import datetime,timedelta
 stocks = []
 
 def parseAllYears(id):
-    with open('../resources/mytil/HistoryCloses'+id+'all.csv', encoding="UTF-8") as fp:
+    with open('../resources/'+id+'.csv', encoding="UTF-8") as fp:
         reader = csv.reader(fp, delimiter=",", quotechar='"')
         # next(reader, None)  # skip the headers
         next(reader)
@@ -20,7 +20,7 @@ def parseAllYears(id):
 
 def parseSpecificYears(id,days):
     today = datetime.today()
-    with open('../resources/mytil/HistoryCloses'+id+'all.csv', encoding="UTF-8") as fp:
+    with open('../resources/'+id+'.csv', encoding="UTF-8") as fp:
         reader = csv.reader(fp, delimiter=",", quotechar='"')
         # next(reader, None)  # skip the headers
         next(reader)
@@ -33,7 +33,23 @@ def parseSpecificYears(id,days):
                 stocks.append(stock)
         return stocks
 
+def replaceGreekCsvHeaders(id):
+    with open('../resources/'+id+'.csv', encoding="UTF-8") as inFile, \
+            open('../resources/'+id+'_eng.csv','w+',newline='',encoding='UTF-8') as outfile:
+        r = csv.reader(inFile)
+        w = csv.writer(outfile)
+
+        next(r, None)  # skip the first row from the reader, the old header
+        next(r, None)
+
+        w.writerow([id])
+        w.writerow(['date', 'close', 'percentage', 'open', 'high','low','volume','turnover'])
+
+        # copy the rest
+        for row in r:
+            w.writerow(row)
+
+
 if __name__ == "__main__":
-    for stock in parseSpecificYears('ΜΥΤΙΛ',365):
-        print(stock.__str__())
+    replaceGreekCsvHeaders('mytil')
 
