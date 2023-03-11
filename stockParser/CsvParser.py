@@ -13,7 +13,7 @@ def parseAllYears(id):
         next(reader)
         next(reader)
         for row in reader:
-            stock = Stock("MYTIL", row[0],row[1], row[2], row[3], row[4], row[5], row[6], row[7])
+            stock = Stock(id, row[0],row[1], row[2], row[3], row[4], row[5], row[6], row[7])
             stocks.append(stock)
         return stocks
 
@@ -29,7 +29,7 @@ def parseSpecificYears(id,days):
             date = datetime.strptime(row[0],'%d/%m/%Y')
 
             if(date >= today -timedelta(days=days)):
-                stock = Stock("MYTIL", row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
+                stock = Stock(id, row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
                 stocks.append(stock)
         return stocks
 
