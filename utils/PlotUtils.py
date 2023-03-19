@@ -1,5 +1,7 @@
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
+from plotly.subplots import make_subplots
+
 
 def plotCurrentStatus(last_30_days, id):
     # Create a Plotly figure object
@@ -41,3 +43,49 @@ def plotFutureSteps(y_test_scaled, predictions,future_predictions,id,column):
     ax.legend()
     plt.title(str(id).capitalize())
     plt.show()
+
+
+
+def plotFuture(y_test_scaled, predictions, future_predictions, id, column):
+    fig = make_subplots(rows=1, cols=1)
+
+    fig.add_trace(
+        go.Scatter(x=list(range(len(y_test_scaled))), y=y_test_scaled.reshape(-1), mode='lines', name='Original price',
+                   line=dict(color='red')))
+    fig.add_trace(
+        go.Scatter(x=list(range(len(predictions))), y=predictions.reshape(-1), mode='lines', name='Predicted price',
+                   line=dict(color='cyan')))
+    fig.add_trace(go.Scatter(x=list(range(len(y_test_scaled), len(y_test_scaled) + len(future_predictions))),
+                             y=future_predictions.reshape(-1), mode='lines', name='Future predicted price',
+                             line=dict(color='green')))
+
+    fig.update_layout(title=str(id).capitalize(), xaxis_title='Time', yaxis_title=f"Price: {column}",
+                      plot_bgcolor='#000041', legend=dict(x=0.05, y=0.95))
+
+    fig.show()
+
+    print("Future Predictions:")
+    print(future_predictions)
+
+def savePlotFuture(y_test_scaled, predictions, future_predictions, id, column):
+    fig = make_subplots(rows=1, cols=1)
+
+    fig.add_trace(
+        go.Scatter(x=list(range(len(y_test_scaled))), y=y_test_scaled.reshape(-1), mode='lines',
+                   name='Original price',
+                   line=dict(color='red')))
+    fig.add_trace(
+        go.Scatter(x=list(range(len(predictions))), y=predictions.reshape(-1), mode='lines', name='Predicted price',
+                   line=dict(color='cyan')))
+    fig.add_trace(go.Scatter(x=list(range(len(y_test_scaled), len(y_test_scaled) + len(future_predictions))),
+                             y=future_predictions.reshape(-1), mode='lines', name='Future predicted price',
+                             line=dict(color='green')))
+
+    fig.update_layout(title=str(id).capitalize(), xaxis_title='Time', yaxis_title=f"Price: {column}",
+                      plot_bgcolor='#000041', legend=dict(x=0.05, y=0.95))
+
+    fig.write_html(f"../resources/{id}.html")
+
+
+
+

@@ -1,29 +1,31 @@
+from multiprocessing import Process
 import yfinance as yf
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
 from keras.layers import Dense, LSTM, Dropout
-from utils.PlotUtils import plotFutureSteps, plotCurrentStatus
+from utils.PlotUtils import plotFutureSteps, plotCurrentStatus, plotFuture, savePlotFuture
 
 
 def loadData(ticker,period):
     return yf.download(ticker, period=period)
-def create_dataset(df):
+def create_dataset(df,steps):
         x = []
         y = []
-        for i in range(50, df.shape[0]):
-            x.append(df[i-50:i, 0])
+        for i in range(steps, df.shape[0]):
+            x.append(df[i-steps:i, 0])
             y.append(df[i, 0])
         x = np.array(x)
         y = np.array(y)
         return x,y
 
-def predict(id):
+def predict(id, feature, days, steps):
+    print(f"********************* Starting prediction for: {id}, days: {days}, steps: {steps} *********************")
     ticker = id
-    df = loadData(ticker,'2y')
+    df = loadData(ticker,'4y')
 
     df.shape
-    df = df['Open'].values
+    df = df[feature].values
     df = df.reshape(-1, 1)
 
     dataset_train = np.array(df[:int(df.shape[0] * 0.8)])
@@ -33,8 +35,8 @@ def predict(id):
     dataset_train = scaler.fit_transform(dataset_train)
     dataset_test = scaler.transform(dataset_test)
 
-    x_train, y_train = create_dataset(dataset_train)
-    x_test, y_test = create_dataset(dataset_test)
+    x_train, y_train = create_dataset(dataset_train,steps)
+    x_test, y_test = create_dataset(dataset_test,steps)
 
     x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
     x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
@@ -54,7 +56,6 @@ def predict(id):
     x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
 
     model.compile(loss='mean_squared_error', optimizer='adam')
-
     model.fit(x_train, y_train, epochs=20, batch_size=32)
     # model.save('stock_prediction.h5')
     #
@@ -67,8 +68,8 @@ def predict(id):
     # make predictions for future time steps
     future_predictions = []
     last_sequence = x_test[-1]
-    look_back = 50
-    for i in range(5):
+    look_back = steps
+    for i in range(days):
         # predict next value
         next_prediction = model.predict(last_sequence.reshape(1, look_back, 1))[0][0]
         # add to predictions array
@@ -79,19 +80,24 @@ def predict(id):
     # invert scaling of predictions
     test_predictions = scaler.inverse_transform(predictions)
     future_predictions = scaler.inverse_transform(np.array(future_predictions).reshape(-1, 1))
-
-    plotFutureSteps(y_test_scaled,predictions, future_predictions,ticker,'Open')
+    #
+    savePlotFuture(y_test_scaled,predictions, future_predictions,ticker,feature)
 
 
 if __name__ == "__main__":
     # MYTIL.AT
     # AAPL
     # BELA.AT
-    predict('MYTIL.AT')
-    # id= "MYTIL.AT"
-    # df = loadData(id,'1y')
+    # GEKTERNA.AT
+    # AEGN.AT
+    # LAMDA.AT
+    # DEI
+    predict('DEI','Close',30, 50)
+    # df = loadData(id,'1mo')
     # last_30_days = df.tail(30)
-    # plotCurrentStatus(last_30_days,id)
+    # plotCurrentStatus(df,id)
+
+
 
 
 
