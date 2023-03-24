@@ -1,4 +1,3 @@
-from multiprocessing import Process
 import yfinance as yf
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
@@ -85,6 +84,7 @@ def predict(id, feature, days, steps):
 
 
 if __name__ == "__main__":
+    # plotCurrentStatus(loadData('MYTIL.AT','1mo').tail(30),'MYTIL')
     # MYTIL.AT
     # AAPL
     # BELA.AT

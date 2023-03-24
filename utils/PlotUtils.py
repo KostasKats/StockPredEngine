@@ -1,3 +1,6 @@
+import os
+from datetime import datetime
+
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 from plotly.subplots import make_subplots
@@ -17,9 +20,7 @@ def plotCurrentStatus(last_30_days, id):
         yaxis_title="Adjusted Close Price",
         hovermode="x"
     )
-    # Display the figure
     fig.show()
-
 def plotCurrentModelResults(y_test_scaled,predictions,id, column):
     fig, ax = plt.subplots(figsize=(16, 8))
     ax.set_facecolor('#000041')
@@ -81,10 +82,18 @@ def savePlotFuture(y_test_scaled, predictions, future_predictions, id, column):
                              y=future_predictions.reshape(-1), mode='lines', name='Future predicted price',
                              line=dict(color='green')))
 
-    fig.update_layout(title=str(id).capitalize(), xaxis_title='Time', yaxis_title=f"Price: {column}",
+    fig.update_layout(title=str(id).capitalize(), xaxis_title='Time (days)', yaxis_title=f"Price: {column}",
                       plot_bgcolor='#000041', legend=dict(x=0.05, y=0.95))
 
-    fig.write_html(f"../resources/{id}.html")
+    savePlot(id,fig)
+
+
+def savePlot(id,fig):
+    folder_path = f"../resources/{id}"
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    fig.write_html(os.path.join(folder_path, f"{datetime.today().strftime('%Y-%m-%d')}_{id}.html"))
 
 
 
