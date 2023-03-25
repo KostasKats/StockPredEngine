@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 
 import plotly.graph_objects as go
@@ -89,11 +88,7 @@ def savePlotFuture(y_test_scaled, predictions, future_predictions, id, column):
 
 
 def savePlot(id,fig):
-    folder_path = f"../resources/{id}"
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-
-    fig.write_html(os.path.join(folder_path, f"{datetime.today().strftime('%Y-%m-%d')}_{id}.html"))
+    fig.write_html(f"../resources/{datetime.today().strftime('%Y-%m-%d')}_{id}.html")
 
 
 
