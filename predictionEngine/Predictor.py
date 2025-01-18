@@ -1,13 +1,15 @@
+import keras
 import yfinance as yf
 import numpy as np
+from keras.applications.densenet import layers
 from sklearn.preprocessing import MinMaxScaler
-from keras.models import Sequential
-from keras.layers import Dense, LSTM, Dropout
-from utils.PlotUtils import plotFutureSteps, plotCurrentStatus, plotFuture, savePlotFuture
+
+from utils.PlotUtils import savePlotFuture
 
 
 def loadData(ticker,period):
     return yf.download(ticker, period=period)
+
 def create_dataset(df,steps):
         x = []
         y = []
@@ -18,13 +20,13 @@ def create_dataset(df,steps):
         y = np.array(y)
         return x,y
 
-def predict(id, feature, days, steps):
+def predict(id, type, days, steps):
     print(f"********************* Starting prediction for: {id}, days: {days}, steps: {steps} *********************")
     ticker = id
     df = loadData(ticker,'4y')
 
     df.shape
-    df = df[feature].values
+    df = df[type].values
     df = df.reshape(-1, 1)
 
     dataset_train = np.array(df[:int(df.shape[0] * 0.8)])
@@ -40,16 +42,13 @@ def predict(id, feature, days, steps):
     x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
     x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
 
-    model = Sequential()
-    model.add(LSTM(units=96, return_sequences=True, input_shape=(x_train.shape[1], 1)))
-    model.add(Dropout(0.2))
-    model.add(LSTM(units=96, return_sequences=True))
-    model.add(Dropout(0.2))
-    model.add(LSTM(units=96, return_sequences=True))
-    model.add(Dropout(0.2))
-    model.add(LSTM(units=96))
-    model.add(Dropout(0.2))
-    model.add(Dense(units=1))
+    model = keras.Sequential()
+    model.add(layers.LSTM(100, return_sequences=True, input_shape=(x_train.shape[1], 1)))
+    model.add(layers.LSTM(100, return_sequences=False))
+    model.add(layers.Dense(25))
+    model.add(layers.Dense(1))
+    model.summary()
+
 
     x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
     x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
@@ -80,7 +79,7 @@ def predict(id, feature, days, steps):
     test_predictions = scaler.inverse_transform(predictions)
     future_predictions = scaler.inverse_transform(np.array(future_predictions).reshape(-1, 1))
     #
-    savePlotFuture(y_test_scaled,predictions, future_predictions,ticker,feature)
+    savePlotFuture(y_test_scaled,predictions, future_predictions,ticker,type)
 
 
 if __name__ == "__main__":
@@ -92,7 +91,7 @@ if __name__ == "__main__":
     # AEGN.AT
     # LAMDA.AT
     # DEI
-    predict('DEI','Close',30, 50)
+    predict('EUROB.AT','Close',60, 50)
     # df = loadData(id,'1mo')
     # last_30_days = df.tail(30)
     # plotCurrentStatus(df,id)

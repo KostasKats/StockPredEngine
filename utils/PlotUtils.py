@@ -67,7 +67,7 @@ def plotFuture(y_test_scaled, predictions, future_predictions, id, column):
     print("Future Predictions:")
     print(future_predictions)
 
-def savePlotFuture(y_test_scaled, predictions, future_predictions, id, column):
+def savePlotFuture(y_test_scaled, predictions, future_predictions, id,type):
     fig = make_subplots(rows=1, cols=1)
 
     fig.add_trace(
@@ -84,11 +84,11 @@ def savePlotFuture(y_test_scaled, predictions, future_predictions, id, column):
     fig.update_layout(title=str(id).capitalize(), xaxis_title='Time (days)', yaxis_title=f"Price: {column}",
                       plot_bgcolor='#000041', legend=dict(x=0.05, y=0.95))
 
-    savePlot(id,fig)
+    savePlot(id,fig,type)
 
 
-def savePlot(id,fig):
-    fig.write_html(f"../resources/{datetime.today().strftime('%Y-%m-%d')}_{id}.html")
+def savePlot(id,fig,type):
+    fig.write_html(f"../resources/{datetime.today().strftime('%Y-%m-%d')}_{id}_{type}.html")
 
 
 
