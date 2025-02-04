@@ -7,11 +7,11 @@ This repository contains a stock predictor engine built using TensorFlow LSTM (L
 ### Prerequisites
 
 - Python 3.11
-- TensorFlow library
+- TensorFlow
 - Keras
-- Pandas library
-- Numpy library
-- Matplotlib library
+- Pandas
+- Numpy 
+- Matplotlib
 
 
 This repository focuses on the development and optimization of machine learning models for predictive analytics, specifically targeting deep learning approaches such as LSTM and Bidirectional LSTM networks. The project emphasizes the exploration and application of various techniques to improve model performance, efficiency, and training effectiveness. Key strategies used include:
