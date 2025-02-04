@@ -67,7 +67,7 @@ def plotFuture(y_test_scaled, predictions, future_predictions, id, column):
     print("Future Predictions:")
     print(future_predictions)
 
-def savePlotFuture(y_test_scaled, predictions, future_predictions, id,type):
+def savePlotFuture(y_test_scaled, predictions, future_predictions, id, type):
     fig = make_subplots(rows=1, cols=1)
 
     fig.add_trace(
@@ -81,8 +81,17 @@ def savePlotFuture(y_test_scaled, predictions, future_predictions, id,type):
                              y=future_predictions.reshape(-1), mode='lines', name='Future predicted price',
                              line=dict(color='green')))
 
-    fig.update_layout(title=str(id).capitalize(), xaxis_title='Time (days)', yaxis_title=f"Price: {column}",
-                      plot_bgcolor='#000041', legend=dict(x=0.05, y=0.95))
+    fig.update_layout(
+        title=str(id).capitalize(),
+        xaxis_title='Time (days)',
+        yaxis_title=f"Price: {type}",
+        yaxis=dict(
+            type='log',  # Set the Y-axis to log scale
+            autorange=True  # Automatically scale the range based on the data
+        ),
+        plot_bgcolor='#000041',
+        legend=dict(x=0.05, y=0.95)
+    )
 
     savePlot(id,fig,type)
 
