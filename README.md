@@ -37,7 +37,7 @@ Real-time tracking and visualization of training metrics using TensorBoard to fa
 ## Validation Splitting: 
 Use of validation splits to evaluate model performance when separate validation sets are unavailable, improving the reliability of training metrics.
 
-TODO
+# TODO
 ## Parallelized Data Loading: 
 Implementation of custom data generators to parallelize data loading, optimizing training time and handling large datasets more effectively.
 ## Gradient Clipping: 
