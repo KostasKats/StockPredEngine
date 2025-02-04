@@ -6,8 +6,9 @@ This repository contains a stock predictor engine built using TensorFlow LSTM (L
 
 ### Prerequisites
 
-- Python 3.x
+- Python 3.11
 - TensorFlow library
+- Keras
 - Pandas library
 - Numpy library
 - Matplotlib library
